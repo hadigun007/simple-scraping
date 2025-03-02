@@ -33,7 +33,8 @@ Api sederhana untuk scraping data produk di e-commerce menggunakan selenium. too
 4.  Buat file `.env` dan tambahkan kunci API Gemini Anda:
 
     ```
-    GEMINI_API_KEY=YOUR_API_KEY
+    mv .env-example .env
+    # GEMINI_API_KEY=YOUR_API_KEY
     ```
 
 ## Penggunaan
