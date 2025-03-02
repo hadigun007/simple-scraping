@@ -33,7 +33,7 @@ Deskripsi singkat tentang proyek Anda. Misalnya: "API sederhana untuk menghasilk
 4.  Buat file `.env` dan tambahkan kunci API Gemini Anda:
 
     ```
-    GOOGLE_API_KEY=YOUR_API_KEY
+    GEMINI_API_KEY=YOUR_API_KEY
     ```
 
 ## Penggunaan
