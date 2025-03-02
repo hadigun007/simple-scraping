@@ -44,7 +44,12 @@ Deskripsi singkat tentang proyek Anda. Misalnya: "API sederhana untuk menghasilk
     node index.js
     ```
 
-2.  Akses *endpoint* API:
+2.  Akses *healtcheck* API:
+    ```sh
+      curl -X GET http://localhost:3000
+    ```
+
+3.  Akses *endpoint* API:
 
     * *Endpoint*: `/api/scrape`
     * Metode: `GET`
