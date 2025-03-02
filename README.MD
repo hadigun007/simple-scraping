@@ -1,6 +1,6 @@
-# Nama Proyek Anda
+# Simple Scraping Test
 
-Deskripsi singkat tentang proyek Anda. Misalnya: "API sederhana untuk menghasilkan deskripsi produk persuasif menggunakan Gemini API."
+Api sederhana untuk scraping data produk di e-commerce menggunakan selenium. tools ini dibuat untuk keperluan test fullstack developer
 
 ## Fitur
 
