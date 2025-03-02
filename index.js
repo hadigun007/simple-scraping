@@ -2,6 +2,8 @@
 const express = require('express');
 const app = express();
 const PORT = 3000;
+const dotenv = require('dotenv');
+dotenv.config();
 // =====
 const { Builder, By, Key, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
@@ -15,15 +17,17 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/scrape', async (req, res) => {
+    if(req.headers['api_key'] !== process.env.LOCAL_API_KEY) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
     let data = await scrapper()
     let gen = await generate_description(data)
-    console.log(gen)
     res.json(gen);
 });
 
 // Start the server
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Server running at http://localhost:${process.env.PORT}/`);
 });
 
 
@@ -136,46 +140,46 @@ async function scrollPage(driver) {
     await driver.executeScript("window.scrollTo(0, 0);");
 }
 async function generate_description(data) {
-    const genAI = new GoogleGenerativeAI("AIzaSyD-9Eb6GXMyp31IphtuXByiP1QiCei5aM0");
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
     
     let batchPrompt = "Buat deskripsi persuasif dalam teks biasa untuk produk-produk berikut:\n\n";
-    data.forEach((item, index) => {
-      batchPrompt += `Produk ${index + 1}:\n`;
-      batchPrompt += `Judul: ${item.title}\n`;
-      batchPrompt += `Harga Asli: ${item.originalPrice}\n`;
-      batchPrompt += `Harga Diskon: ${item.discountedPrice}\n`;
-      batchPrompt += `Persentase Diskon: ${item.discountPercentage}\n\n`;
-    });
-  
-    const result = await model.generateContent(batchPrompt);
-    const response = await result.response;
-    const descriptions = response.text().split("Produk ");
-  
-    const results = data.map((item, index) => {
-      let description = "Deskripsi tidak tersedia.";
-      try {
-        if (descriptions[index + 1]) {
-          const descText = descriptions[index + 1];
-          const colonIndex = descText.indexOf(":");
-          if (colonIndex !== -1) {
-            description = descText.substring(colonIndex + 1).trim();
-          } else {
-            description = descText.trim();
-          }
+  data.forEach((item, index) => {
+    batchPrompt += `Produk ${index + 1}:\n`;
+    batchPrompt += `Judul: ${item.title}\n`;
+    batchPrompt += `Harga Asli: ${item.originalPrice}\n`;
+    batchPrompt += `Harga Diskon: ${item.discountedPrice}\n`;
+    batchPrompt += `Persentase Diskon: ${item.discountPercentage}\n\n`;
+  });
+
+  const result = await model.generateContent(batchPrompt);
+  const response = await result.response;
+  const descriptions = response.text().split("Produk ");
+
+  const results = data.map((item, index) => {
+    let aiGeneratedDescription = "Deskripsi tidak tersedia.";
+    try {
+      if (descriptions[index + 1]) {
+        const descText = descriptions[index + 1];
+        const colonIndex = descText.indexOf(":");
+        if (colonIndex !== -1) {
+          aiGeneratedDescription = descText.substring(colonIndex + 1).trim();
+        } else {
+          aiGeneratedDescription = descText.trim();
         }
-        description = description.replace(/[\n\r\t]+/g, " ").trim();
-      } catch (error) {
-        console.error(`Error processing description for product ${index + 1}:`, error);
       }
-  
-      return {
-        ...item,
-        description: description,
-      };
-    });
-  
-    return results;
+      aiGeneratedDescription = aiGeneratedDescription.replace(/[\n\r\t]+/g, " ").trim();
+    } catch (error) {
+      console.error(`Error processing description for product ${index + 1}:`, error);
+    }
+
+    return {
+      ...item,
+      "description(ai generated)": aiGeneratedDescription,
+    };
+  });
+
+  return results;
     
 }
 
