@@ -38,7 +38,7 @@ Api sederhana untuk scraping data produk di e-commerce menggunakan selenium. too
     ```
 
 ## Penggunaan
-
+ 
 1.  Jalankan server:
 
     ```bash
@@ -75,6 +75,32 @@ Api sederhana untuk scraping data produk di e-commerce menggunakan selenium. too
         "productDetailUrl": "[https://www.orami.co.id/shopping/promo/promo-philips-home-appliances](https://www.orami.co.id/shopping/promo/promo-philips-home-appliances)",
         "description(ai generated)": "Deskripsi tidak tersedia."
       },
+      ...
+    ]
+    ```
+3.  Akses *endpoint* API 2:
+
+    * *Endpoint*: `/api/scrape/2`
+    * Metode: `GET`
+    * *Body*: Data produk dalam format JSON.
+
+    Contoh *CURL*:
+
+    ```sh
+      curl -X GET http://localhost:3000/api/scrape/2 -H "api_key: justalocalsimpleapikey"
+    ```
+
+    Contoh respons:
+
+    ```json
+    [
+      {
+        "name":"Philips Stand Mixers - Merah - HR1559/10",
+        "link":"N/A",
+        "imageUrl":"https://o-cdf.oramiland.com/unsafe/core.oramiland.com/media/CACHE/images/products/164372/KITC-PHIL-728A/bcfac20b50878959ac8f54603d0a3eb1.jpg","originalPrice":"Rp696.000",
+        "discountedPrice":"21%Rp696.000\nRp550.077",
+        "description(ai generated)":"** Sepatu Lari Premium *   **"
+      }
       ...
     ]
     ```
